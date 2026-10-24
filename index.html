@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio - Developer & UI Designer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Konfigurasi Tailwind untuk Dark Mode berbasis Class
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Tambahan Kustom */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+        /* Custom Scrollbar Minimalis */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a1a1aa;
+            border-radius: 3px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 antialiased min-h-screen selection:bg-zinc-200 dark:selection:bg-zinc-800">
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-out pointer-events-none flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-sm font-medium border border-zinc-700 dark:border-zinc-300">
+        <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toast-message">Notifikasi</span>
+    </div>
+
+    <!-- Hidden Input untuk copy-to-clipboard aman -->
+    <input type="text" id="clipboard-helper" class="sr-only" aria-hidden="true" readonly />
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-zinc-50/80 dark:bg-zinc-950/80 border-b border-zinc-200/80 dark:border-zinc-800/80 transition-colors">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Brand Logo / Name -->
+            <a href="#" class="font-mono text-sm font-semibold tracking-tight hover:opacity-70 transition-opacity">
+                BRAM<span class="text-emerald-600 dark:text-emerald-400">.dev</span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm text-zinc-600 dark:text-zinc-400 font-medium">
+                <a href="#proyek" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Proyek</a>
+                <a href="#pengalaman" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Pengalaman</a>
+                <a href="#tentang" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Tentang</a>
+                <a href="#kontak" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Kontak</a>
+            </nav>
+
+            <!-- Actions (Theme Toggle & Mobile Menu Button) -->
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" type="button" aria-label="Ganti Tema" class="p-2 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 transition-colors">
+                    <!-- Sun Icon -->
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    <!-- Moon Icon -->
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+
+                <!-- Mobile Menu Hamburger -->
+                <button id="mobile-menu-btn" type="button" aria-label="Buka Menu" class="md:hidden p-2 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 py-4 space-y-3 font-medium text-sm">
+            <a href="#proyek" class="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">Proyek</a>
+            <a href="#pengalaman" class="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">Pengalaman</a>
+            <a href="#tentang" class="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">Tentang</a>
+            <a href="#kontak" class="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">Kontak</a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 space-y-28 py-16">
+
+        <!-- Hero Section -->
+        <section class="space-y-6 pt-6">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Tersedia untuk proyek baru / full-time
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-3xl sm:text-5xl font-bold tracking-tight leading-tight max-w-3xl text-zinc-900 dark:text-zinc-50">
+                Tambal jam 24 ban
+                <br>Sedia susu kuda liar
+            </h1>
+
+            <!-- Subtext -->
+            <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">
+                Saya membangun aplikasi web berperforma tinggi dengan arsitektur kode yang rapi, aksesibel, dan desain tanpa pernak-pernik yang tidak perlu.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center gap-4 pt-4">
+                <a href="#proyek" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-sm font-medium bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition-opacity">
+                    Lihat Proyek
+                </a>
+                <button id="copy-email-btn" data-email="ahmad.rizky@example.com" class="inline-flex items-center gap-2 justify-center px-5 py-2.5 rounded-lg text-sm font-medium border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-colors">
+                    <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <span>Salin Email</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Proyek Pilihan (Selected Works) -->
+        <section id="proyek" class="space-y-8 scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Proyek Pilihan</h2>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Beberapa karya teknis yang telah saya bangun.</p>
+                </div>
+
+                <!-- Filter Category -->
+                <div class="flex flex-wrap gap-2 text-xs font-mono">
+                    <button data-filter="all" class="filter-btn active px-3 py-1.5 rounded-md border border-zinc-900 bg-zinc-900 text-zinc-100 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 transition-colors">Semua</button>
+                    <button data-filter="frontend" class="filter-btn px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">Frontend</button>
+                    <button data-filter="fullstack" class="filter-btn px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">Full-stack</button>
+                    <button data-filter="uiux" class="filter-btn px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">UI/UX</button>
+                </div>
+            </div>
+
+            <!-- Grid Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
+                
+                <!-- Card 1 -->
+                <div class="project-card group border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900/40 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col" data-category="frontend">
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="h-40 w-full bg-zinc-100 dark:bg-zinc-800/80 rounded-lg flex items-center justify-center p-4 border border-zinc-200/60 dark:border-zinc-700/60">
+                                <!-- Minimal Wireframe SVG Graphic -->
+                                <svg class="w-2/3 h-2/3 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Aether Design System</h3>
+                                <span class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">Frontend</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                System komponen React yang ringan dan fokus pada aksesibilitas WCAG 2.1 AAA serta performa rendering cepat.
+                            </p>
+                        </div>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">React</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">TypeScript</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Tailwind CSS</span>
+                            </div>
+                            <button onclick="openModal('aether')" class="w-full text-center py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors">
+                                Detail Teknis & Overview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="project-card group border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900/40 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col" data-category="fullstack">
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="h-40 w-full bg-zinc-100 dark:bg-zinc-800/80 rounded-lg flex items-center justify-center p-4 border border-zinc-200/60 dark:border-zinc-700/60">
+                                <svg class="w-2/3 h-2/3 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Pulse Analytics Engine</h3>
+                                <span class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">Full-stack</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                Dashboard analitik privasi tinggi yang memproses log lalu lintas web tanpa melacak cookie pengguna.
+                            </p>
+                        </div>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Next.js</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Node.js</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">PostgreSQL</span>
+                            </div>
+                            <button onclick="openModal('pulse')" class="w-full text-center py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors">
+                                Detail Teknis & Overview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="project-card group border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900/40 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col" data-category="uiux">
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="h-40 w-full bg-zinc-100 dark:bg-zinc-800/80 rounded-lg flex items-center justify-center p-4 border border-zinc-200/60 dark:border-zinc-700/60">
+                                <svg class="w-2/3 h-2/3 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Flow Checkout Redesign</h3>
+                                <span class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">UI/UX</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                Desain ulang alur transaksi e-commerce yang mengurangi angka abandon cart sebesar 18% melalui mikro-interaksi efisien.
+                            </p>
+                        </div>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Figma</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">User Testing</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Prototyping</span>
+                            </div>
+                            <button onclick="openModal('flow')" class="w-full text-center py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors">
+                                Detail Teknis & Overview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="project-card group border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900/40 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col" data-category="frontend">
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="h-40 w-full bg-zinc-100 dark:bg-zinc-800/80 rounded-lg flex items-center justify-center p-4 border border-zinc-200/60 dark:border-zinc-700/60">
+                                <svg class="w-2/3 h-2/3 text-zinc-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">FastDoc SSG Template</h3>
+                                <span class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">Frontend</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                Template dokumentasi static site berkecepatan tinggi dengan skor Core Web Vitals sempurna 100/100.
+                            </p>
+                        </div>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Astro</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">MDX</span>
+                                <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">Vanilla JS</span>
+                            </div>
+                            <button onclick="openModal('fastdoc')" class="w-full text-center py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors">
+                                Detail Teknis & Overview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Experience & Skills Section -->
+        <section id="pengalaman" class="space-y-12 scroll-mt-24">
+            <div class="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Pengalaman & Keahlian</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Jejak karir profesional dan spesifikasi teknis.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Timeline Experience -->
+                <div class="lg:col-span-7 space-y-6">
+                    <h3 class="text-xs font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Riwayat Kerja</h3>
+                    
+                    <div class="space-y-8 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-zinc-200 dark:before:bg-zinc-800">
+                        
+                        <!-- Exp 1 -->
+                        <div class="relative pl-8 space-y-1">
+                            <span class="absolute left-2 top-1.5 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-zinc-50 dark:ring-zinc-950"></span>
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Senior Frontend Developer</h4>
+                                <span class="text-xs font-mono text-zinc-500">2023 — Sekarang</span>
+                            </div>
+                            <p class="text-xs font-mono text-zinc-500 dark:text-zinc-400">Nusantara Tech Studio</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 pt-1">
+                                Memimpin optimasi aplikasi web enterprise, meningkatkan skor Lighthouse sebesar 35%, serta membangun perpustakaan komponen reusabel.
+                            </p>
+                        </div>
+
+                        <!-- Exp 2 -->
+                        <div class="relative pl-8 space-y-1">
+                            <span class="absolute left-2 top-1.5 w-3 h-3 rounded-full bg-zinc-300 dark:bg-zinc-700 ring-4 ring-zinc-50 dark:ring-zinc-950"></span>
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">UI/UX & Web Engineer</h4>
+                                <span class="text-xs font-mono text-zinc-500">2021 — 2023</span>
+                            </div>
+                            <p class="text-xs font-mono text-zinc-500 dark:text-zinc-400">Kreatif Digital Labs</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 pt-1">
+                                Merancang antarmuka pengguna untuk belasan proyek SaaS dan mengimplementasikannya langsung ke dalam sistem frontend React.
+                            </p>
+                        </div>
+
+                        <!-- Exp 3 -->
+                        <div class="relative pl-8 space-y-1">
+                            <span class="absolute left-2 top-1.5 w-3 h-3 rounded-full bg-zinc-300 dark:bg-zinc-700 ring-4 ring-zinc-50 dark:ring-zinc-950"></span>
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">Junior Web Developer</h4>
+                                <span class="text-xs font-mono text-zinc-500">2020 — 2021</span>
+                            </div>
+                            <p class="text-xs font-mono text-zinc-500 dark:text-zinc-400">Inovasi Solusi</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 pt-1">
+                                Mengembangkan landing page interaktif, integrasi API RESTful, dan memastikan konsistensi tampilan lintas peramban.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Skills Group -->
+                <div class="lg:col-span-5 space-y-6">
+                    <h3 class="text-xs font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Keahlian Utama</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 space-y-2">
+                            <h4 class="text-xs font-mono font-medium text-zinc-900 dark:text-zinc-200">Frontend</h4>
+                            <div class="flex flex-wrap gap-1.5 text-xs font-mono text-zinc-600 dark:text-zinc-400">
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">TypeScript</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">React / Next.js</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Vue.js</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Tailwind CSS</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">HTML5/CSS3</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 space-y-2">
+                            <h4 class="text-xs font-mono font-medium text-zinc-900 dark:text-zinc-200">Backend & Database</h4>
+                            <div class="flex flex-wrap gap-1.5 text-xs font-mono text-zinc-600 dark:text-zinc-400">
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Node.js</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Express</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">PostgreSQL</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">REST API</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 space-y-2">
+                            <h4 class="text-xs font-mono font-medium text-zinc-900 dark:text-zinc-200">Tools & Metode</h4>
+                            <div class="flex flex-wrap gap-1.5 text-xs font-mono text-zinc-600 dark:text-zinc-400">
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Git / GitHub</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Figma</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Vite</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Web Vitals</span>
+                                <span class="px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-800">Accessibility</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tentang (About Me) Section -->
+        <section id="tentang" class="space-y-8 scroll-mt-24">
+            <div class="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Tentang Saya</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Filosofi kerja dan gambaran singkat.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                <div class="md:col-span-8 space-y-4 text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
+                    <p>
+                        Saya berkeyakinan bahwa sebuah produk web harus bekerja cepat dan intuitif. Tidak perlu terlalu banyak animasi dekoratif atau jargon teknis yang membingungkan.
+                    </p>
+                    <p>
+                        Pendekatan koding saya berpusat pada keterbacaan struktur, efisiensi render browser, serta pemisahan tanggung jawab kode yang jelas. Saat merancang antarmuka, fokus utama saya adalah menyajikan informasi dengan hierarki visual yang jujur dan nyaman dibaca.
+                    </p>
+                    <p>
+                        Di luar aktivitas pengembangan produk, saya aktif mengikuti perkembangan standar web modern, mengoptimalkan perkakas pengembang, serta berkontribusi pada proyek open-source skala kecil.
+                    </p>
+                </div>
+
+                <!-- Quick Stats Grid -->
+                <div class="md:col-span-4 grid grid-cols-2 gap-4 font-mono">
+                    <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 text-center">
+                        <div class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">4+</div>
+                        <div class="text-[11px] text-zinc-500 mt-1">Tahun Pengalaman</div>
+                    </div>
+                    <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 text-center">
+                        <div class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">25+</div>
+                        <div class="text-[11px] text-zinc-500 mt-1">Proyek Selesai</div>
+                    </div>
+                    <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 text-center">
+                        <div class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">99%</div>
+                        <div class="text-[11px] text-zinc-500 mt-1">Skor Core Vitals</div>
+                    </div>
+                    <div class="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 text-center">
+                        <div class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">100%</div>
+                        <div class="text-[11px] text-zinc-500 mt-1">Bebas AI Slop</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kontak Section -->
+        <section id="kontak" class="space-y-8 scroll-mt-24">
+            <div class="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                <h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Hubungi Saya</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Ada diskusi proyek atau pertanyaan? Silakan kirim pesan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+                <!-- Contact Direct Info -->
+                <div class="md:col-span-5 space-y-6">
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        Saya terbuka untuk kolaborasi proyek lepas, posisi full-time, maupun sekadar bertukar pikiran seputar pengembangan web modern.
+                    </p>
+
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
+                            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>ahmad.rizky@example.com</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
+                            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span>Jakarta / Indonesia (UTC+7)</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="pt-2 flex items-center gap-3">
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-400 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-400 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.6a1.4 1.4 0 1 0 1.4 1.4 1.4 1.4 0 0 0-1.4-1.4z"></path></svg>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-400 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Form Kontak -->
+                <form id="contact-form" class="md:col-span-7 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label for="name" class="block text-xs font-mono text-zinc-700 dark:text-zinc-300">Nama Lengkap</label>
+                            <input type="text" id="name" required placeholder="Ahmad Rizky" class="w-full px-3.5 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 text-zinc-900 dark:text-zinc-100 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="email" class="block text-xs font-mono text-zinc-700 dark:text-zinc-300">Alamat Email</label>
+                            <input type="email" id="email" required placeholder="nama@email.com" class="w-full px-3.5 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 text-zinc-900 dark:text-zinc-100 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="message" class="block text-xs font-mono text-zinc-700 dark:text-zinc-300">Pesan</label>
+                        <textarea id="message" rows="4" required placeholder="Tuliskan detail singkat diskusi atau pertanyaan Anda..." class="w-full px-3.5 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 text-zinc-900 dark:text-zinc-100 transition-all resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-sm font-medium hover:opacity-90 transition-opacity">
+                        Kirim Pesan
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Minimalis -->
+    <footer class="border-t border-zinc-200 dark:border-zinc-800 py-8 text-xs font-mono text-zinc-500">
+        <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                © <span id="current-year">2026</span> Ahmad Rizky. Tanpa pendaftaran hak cipta berlebihan.
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>WIB (UTC+7) — <span id="live-time">00:00:00</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Pop-up Detail Proyek -->
+    <div id="project-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 w-full max-w-xl rounded-xl p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <!-- Modal Content (Injected by JS) -->
+            <div id="modal-body" class="space-y-4">
+                <!-- Content inserted via JS -->
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="pt-2 flex items-center justify-end gap-3 border-t border-zinc-100 dark:border-zinc-800">
+                <a id="modal-github" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    Source Code
+                </a>
+                <a id="modal-demo" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:opacity-90 transition-opacity">
+                    Lihat Live Demo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logika & Interaktivitas -->
+    <script>
+        // Data Proyek Lengkap untuk Modal
+        const projectsData = {
+            aether: {
+                title: "Aether Design System",
+                category: "Frontend Framework",
+                description: "System komponen berbasis React yang dibangun khusus untuk aplikasi berstandar aksesibilitas tinggi dan beban bundle minimal (<12kb gzipped).",
+                features: [
+                    "Kepatuhan WCAG 2.1 AAA penuh untuk pembaca layar.",
+                    "Kompatibel penuh dengan Server Side Rendering (SSR) & RSC.",
+                    "Sistem token tema otomatis via CSS Custom Properties."
+                ],
+                tech: ["React", "TypeScript", "Tailwind CSS", "Storybook"],
+                github: "https://github.com",
+                demo: "https://example.com"
+            },
+            pulse: {
+                title: "Pulse Analytics Engine",
+                category: "Full-stack Web App",
+                description: "Mesin analitik web yang dirancang khusus untuk mengutamakan privasi pengguna. Memproses jutaan log halaman per hari dengan latency under 50ms.",
+                features: [
+                    "Tanpa penyimpanan cookie atau pelacakan identitas individu.",
+                    "Agregasi data real-time menggunakan Server-Sent Events (SSE).",
+                    "Penyimpanan ringkas menggunakan PostgreSQL ter-indeks."
+                ],
+                tech: ["Next.js", "Node.js", "PostgreSQL", "Tailwind CSS"],
+                github: "https://github.com",
+                demo: "https://example.com"
+            },
+            flow: {
+                title: "Flow Checkout Redesign",
+                category: "UI/UX Case Study",
+                description: "Proyek perancangan ulang pengalaman transaksi belanja online. Berfokus pada kejelasan langkah pengisian data dan konfirmasi tanpa distraksi visual.",
+                features: [
+                    "A/B Testing pada 10.000 pengguna aktif harian.",
+                    "Navigasi form tanpa lag dengan validasi konteks seketika.",
+                    "Optimasi penuh pada perangkat seluler dengan layar terbatas."
+                ],
+                tech: ["Figma", "User Research", "Prototyping", "Design System"],
+                github: "https://github.com",
+                demo: "https://example.com"
+            },
+            fastdoc: {
+                title: "FastDoc SSG Template",
+                category: "Static Site Generator",
+                description: "Template situs dokumentasi teknis berkecepatan tinggi yang dikompilasi secara statis dengan integrasi pencarian cepat client-side.",
+                features: [
+                    "Skor Google Core Web Vitals 100/100 secara konsisten.",
+                    "Dukungan pencarian lokal instan berbasis FlexSearch.",
+                    "Format penulisan mudah menggunakan standar MDX."
+                ],
+                tech: ["Astro", "MDX", "Vanilla JS", "Tailwind CSS"],
+                github: "https://github.com",
+                demo: "https://example.com"
+            }
+        };
+
+        // 1. Theme Switcher (Dark / Light Mode dengan LocalStorage)
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+                showToast("Tema diubah ke Mode Terang");
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+                showToast("Tema diubah ke Mode Gelap");
+            }
+        });
+
+        // 2. Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Tutup mobile menu saat link diklik
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // 3. Filter Proyek
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+
+                // Update active button state
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-zinc-900', 'text-zinc-100', 'border-zinc-900', 'dark:bg-zinc-100', 'dark:text-zinc-900', 'dark:border-zinc-100');
+                    b.classList.add('border-zinc-200', 'dark:border-zinc-800', 'text-zinc-600', 'dark:text-zinc-400');
+                });
+
+                btn.classList.add('bg-zinc-900', 'text-zinc-100', 'border-zinc-900', 'dark:bg-zinc-100', 'dark:text-zinc-900', 'dark:border-zinc-100');
+                btn.classList.remove('border-zinc-200', 'dark:border-zinc-800', 'text-zinc-600', 'dark:text-zinc-400');
+
+                // Filter Cards
+                projectCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (filter === 'all' || category === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 4. Copy Email to Clipboard (Sesuai Aturan iFrame aman)
+        const copyEmailBtn = document.getElementById('copy-email-btn');
+        copyEmailBtn.addEventListener('click', () => {
+            const email = copyEmailBtn.getAttribute('data-email');
+            const helperInput = document.getElementById('clipboard-helper');
+            
+            helperInput.value = email;
+            helperInput.select();
+            helperInput.setSelectionRange(0, 99999); // Untuk perangkat seluler
+
+            try {
+                document.execCommand('copy');
+                showToast("Email berhasil disalin ke clipboard!");
+            } catch (err) {
+                showToast("Gagal menyalin email.");
+            }
+        });
+
+        // 5. Modal Popup Logic
+        const modal = document.getElementById('project-modal');
+        const modalBody = document.getElementById('modal-body');
+        const modalGithub = document.getElementById('modal-github');
+        const modalDemo = document.getElementById('modal-demo');
+
+        function openModal(key) {
+            const data = projectsData[key];
+            if (!data) return;
+
+            modalBody.innerHTML = `
+                <div class="space-y-2">
+                    <span class="text-xs font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">${data.category}</span>
+                    <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">${data.title}</h3>
+                </div>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">${data.description}</p>
+                
+                <div class="space-y-2 pt-2">
+                    <h4 class="text-xs font-mono uppercase text-zinc-500">Poin Kunci</h4>
+                    <ul class="text-sm space-y-1.5 text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+                        ${data.features.map(f => `<li>${f}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <h4 class="text-xs font-mono uppercase text-zinc-500">Teknologi</h4>
+                    <div class="flex flex-wrap gap-1.5 text-xs font-mono">
+                        ${data.tech.map(t => `<span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">${t}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            modalGithub.href = data.github;
+            modalDemo.href = data.demo;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close Modal via Outside Click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Close Modal via ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+        });
+
+        // 6. Contact Form Handler (Validation & Toast)
+        const contactForm = document.getElementById('contact-form');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            if (name && email && message) {
+                showToast("Pesan berhasil dikirim! Terima kasih.");
+                contactForm.reset();
+            } else {
+                showToast("Mohon lengkapi semua kolom form.");
+            }
+        });
+
+        // 7. Toast Notification Utility
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 8. Live Time Clock & Year
+        function updateLiveTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('live-time').textContent = timeStr;
+            document.getElementById('current-year').textContent = now.getFullYear();
+        }
+        setInterval(updateLiveTime, 1000);
+        updateLiveTime();
+
+        // Initialize Theme on load
+        initTheme();
+    </script>
+</body>
+</html>
